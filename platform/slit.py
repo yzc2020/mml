@@ -395,6 +395,7 @@ def training():
         "DTNNModel":"CoulombMatrix",
         "BasicMolGANModel":"MolGanFeaturizer",
         "LCNNModel":"LCNNFeaturizer",
+        "ChemNet":"ChemNetFeaturizer"
     }
 
     model2model = {
@@ -414,6 +415,7 @@ def training():
         "DMPNNModel":dc.models.DMPNNModel,
         "CGCNNModel":dc.models.CGCNNModel,
         "LCNNModel":dc.models.LCNNModel,
+        "ChemNet":dc.models.ChemNet
     }
 
     model_choice = st.sidebar.selectbox("Choose the model",model2feat.keys())
