@@ -133,7 +133,10 @@ class FPAN(nn.Module):
                 fp_erg = list(AllChem.GetErGFingerprint(mol,fuzzIncrement=0.3,maxPath=21,minPath=1))+[0]*(self.maxsize-self.erglen)
                 fp_pubchem = list(GetPubChemFPs(mol))+[0]*(self.maxsize-self.pubchemlen)
                 #fp_morgan = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=1024)
-                fps.extend(fp_maccs+fp_erg+fp_pubchem)
+                fp_2dparam = Generate.Gen2Dfingerprint(mol,Gobbi_Pharm2D.factory)
+                #fps.extend(fp_maccs+fp_erg+fp_pubchem)
+                fps.extend(fp_maccs+fp_erg+fp_fp_2dparam)
+                #fps.extend(fp_maccs+fp_erg+fp_pubchem)
 
                 self.smile2fp[one]=fps
             fp_tensor=torch.Tensor(fps).view(3,-1)
