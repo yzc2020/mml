@@ -5,6 +5,8 @@ import numpy as np
 import scipy
 from rdkit import Chem
 from rdkit.Chem import AllChem, MACCSkeys
+from rdkit.Chem.Phram2D.SigFactory import SigFactory
+from rdkit.Chem.Phram2D import Generate,Gobbi_Pharm2D
 from fpgnn.data import GetPubChemFPs,prepare_feature, create_graph, get_atom_features_dim
 import csv
 import os
@@ -100,6 +102,7 @@ class FPAN(nn.Module):
         self.pubchemlen=881
         self.ecfplen=1024
         self.erglen=441
+        self.phram2dlen = 1024
         self.maxsize=896
         self.num_heads=8
 
@@ -132,7 +135,9 @@ class FPAN(nn.Module):
                 fp_erg = list(AllChem.GetErGFingerprint(mol,fuzzIncrement=0.3,maxPath=21,minPath=1))+[0]*(self.maxsize-self.erglen)
                 fp_pubchem = list(GetPubChemFPs(mol))+[0]*(self.maxsize-self.pubchemlen)
                 #fp_morgan = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=1024)
-                fps.extend(fp_maccs+fp_erg+fp_pubchem)
+                fp_2dparam = Generate.Gen2Dfingerprint(mol,Gobbi_Pharm2D.factory)
+                #fps.extend(fp_maccs+fp_erg+fp_pubchem)
+                fps.extend(fp_maccs+fp_erg+fp_fp_2dparam)
 
                 self.smile2fp[one]=fps
             fp_tensor=torch.Tensor(fps).view(3,-1)
